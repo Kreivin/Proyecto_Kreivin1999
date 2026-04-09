@@ -40,7 +40,7 @@ if (esLogin) {
     contenidoMenu = (
         <Nav className="ms-auto pe-2">
             <Nav.Link
-                onclick={() => manejarNavegacion("/login")}
+                onClick={() => manejarNavegacion("/login")}
                 className={mostrarMenu ? "color-texto-marca" : "texto-white"}
             >
                 <i className="bi-person-fill-lock me-2"></i>
@@ -161,7 +161,7 @@ return (
             {/*menu lateral*/}
             <Navbar.Offcanvas
                 id="menu-offcanvas"
-                Placement="end"
+                placement="end"
                 show={mostrarMenu}
                 onHide={() => setMostrarMenu(false)}
             >

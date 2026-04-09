@@ -22,7 +22,7 @@ return (
 <main className="margen-superior-main">
 <Routes>
 
-<Route path="/login" element={<Login />} />
+<Route path="/login" element={<login />} />
 
 <Route path="/" element={<RutaProtegida><Inicio /></RutaProtegida>} />
 <Route path="/categorias" element={<RutaProtegida><Categorias /></RutaProtegida>} />
