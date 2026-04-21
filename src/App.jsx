@@ -13,6 +13,9 @@ import RutaProtegida from "./components/rutas/RutaProtegida";
 import Pagina404 from "./views/Pagina404";
 
 import "./App.css";
+
+import "./App.css";
+
 const App = ( ) => {
 return (
 <Router>

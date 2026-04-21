@@ -1,21 +1,28 @@
-import react from "react";
-import {Form, Button, Card, Alert} from "react-bootstrap";
+import React from "react";
+import { Form, Button, Card, Alert } from "react-bootstrap";
 
-const formularioLogin = ({usuario, contrasena, error, setUsuario, setContasena, iniciarSesion}) => {
-    return(
-        <Card style={{minWidth: "320px", maxWidth: "400px", width:"100%"}} className="p-4 shadow-lg">
+const FormularioLogin = ({ usuario, contrasena, error, setUsuario, setContrasena, iniciarSesion }) => {
+
+    return (
+        <Card style={{ minWidth: "320px", maxWidth: "400px", width: "100%" }} className="p-4 shadow-lg">
             <Card.Body>
-                <h3 className="text-center mb-4">Iniciar Sesion</h3>
+                <h3 className="text-center mb-4">Iniciar Sesión</h3>
 
-                <Form>
+                {error && <Alert variant="danger">{error}</Alert>}
+
+                <Form onSubmit={(e) => {
+                    e.preventDefault(); // Evita que la página se recargue
+                    iniciarSesion();
+                }}>
+
                     <Form.Group className="mb-3" controlId="usuario">
                         <Form.Label>Usuario</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Ingrese su usuario"
+                            placeholder="Ingresa tu usuario"
                             value={usuario}
                             onChange={(e) => setUsuario(e.target.value)}
-                        required
+                            required
                         />
                     </Form.Group>
 
@@ -23,21 +30,21 @@ const formularioLogin = ({usuario, contrasena, error, setUsuario, setContasena, 
                         <Form.Label>Contraseña</Form.Label>
                         <Form.Control
                             type="password"
-                            placeholder="Ingrese su contraseña"
+                            placeholder="Ingresa tu contraseña"
                             value={contrasena}
-                            onChange={(e) => setContasena(e.target.value)}
-                        required
+                            onChange={(e) => setContrasena(e.target.value)}
+                            required
                         />
                     </Form.Group>
 
-                    <Button variant="primary" className="w-100" onClick={iniciarSesion}>
-                        Iniciar Sesion
+                    <Button variant="primary" type="submit" className="w-100">
+                        Iniciar Sesión
                     </Button>
                 </Form>
-                </Card.Body>
+            </Card.Body>
         </Card>
     );
 
 };
 
-export default formularioLogin;
+export default FormularioLogin;

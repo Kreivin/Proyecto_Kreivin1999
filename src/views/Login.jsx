@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FormularioLogin from "../components/login/FormularioLogin";
-import { supabase } from "../database/supabaseconfig";
-
-
-
+import FormularioLogin from "../components/login/FormularioLogin.jsx";
+import { Container, Row, Col } from "react-bootstrap";
+import { supabase } from "../database/supabaseconfig.js"
 
 const Login = () => {
-
     const [usuario, setUsuario] = useState("");
     const [contrasena, setContrasena] = useState("");
-    const [error, setError] = useState("null");
+    const [error, setError] = useState(null);
     const navegar = useNavigate();
+
+    useEffect(() => {
+        const usuarioGuardado = localStorage.getItem("usuario-supabase");
+        if (usuarioGuardado) {
+            navegar("/");
+        }
+    }, [navegar]);
 
     const iniciarSesion = async () => {
         try {
@@ -19,26 +23,27 @@ const Login = () => {
                 email: usuario,
                 password: contrasena,
             });
+
             if (error) {
                 setError("Usuario o contraseña incorrectos");
                 return;
+
             }
+
             if (data.user) {
                 localStorage.setItem("usuario-supabase", usuario);
                 navegar("/");
+
             }
         } catch (err) {
             setError("Error al conectar con el servidor");
-            console.error("Error en la solicitud", err);
-        }
-        useEffect(() => {
-            const usuarioGuardado = localStorage.getItem("usuario-supabase");
-            if (usuarioGuardado) {
-                navegar("/");
-            }
-        }, [navegar]);
+            console.error("Error en la solicitud:", err);
 
-        <div style={estiloContenedor}>
+        }
+    };
+
+    return (
+        <div className="contenedor-login">
             <FormularioLogin
                 usuario={usuario}
                 contrasena={contrasena}
@@ -48,18 +53,7 @@ const Login = () => {
                 iniciarSesion={iniciarSesion}
             />
         </div>
-
-    };
-    return (
-        <Container className="mt-3">
-            <Row className="align-items-center">
-                <Col>
-                    <h2><i className="bi-house-fill me-2"></i> Login</h2>
-                </Col>
-            </Row>
-        </Container>
     );
-
 };
 
 export default Login;
