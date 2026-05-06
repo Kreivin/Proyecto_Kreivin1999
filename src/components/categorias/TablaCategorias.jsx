@@ -1,73 +1,74 @@
-import React, {useEffect} from "react";
-import {Table, Spinner, Button} from "react-bootstrap";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import React, { useState } from "react";
+import { Modal, Button, Form } from 'react-bootstrap';
 
-const TablaCategorias = ({
-    categorias,
-    abrirModalEdicion,
-    abrirModalEliminacion
+const ModalRegistroCategoria = ({
+    mostrarModal,
+    setMostrarmodal,
+    nuevaCategoria,
+    manejoCambioInput,
+    agregarCategoria,
 }) => {
-    const [loading, setLoading] = useState(true);
-    useEffect(()=>{
-        if (categorias && categorias.length > 0){
-            setLoading(false);
-        }else{
-            setLoading(true);
-        }
-    }, [categorias]
-    );
+    const [deshabilitado, setDesabilitado] = useState(false);
 
-    
-    return(
-        <>
-        {loading ?(
-    <div className="text-center">
-        <h4>Cargando categorias...</h4>
-        <Spinner animation="border" variant="success"/>
-        </div>  
-        ):(
-            <Table striped borderless hover responsive size= "sm">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th className= "d-none d-md-tale-cell">Descripcion</th>
-                        <th clasName= "text-center">Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {categorias.map((categoria)=> (
-                            <tr key={categoria.id_categoria}>
-                                <td>{categoria.id_categoria}</td>
-                                <td>{categoria.nombre_categoria}</td>
-                                <td className="d-none d-md-table-cell">{categoria.descripcion_categoria}</td>
-                                <td className="text-center">
-                                    <Button
-                                    variant="outline-warning"
-                                    size="sm"
-                                    className="m-1"
-                                    onClick={() => abrirModalEdicion(categoria)}
-                                    >
-                                        <i className= "bi bi-pencil"></i>
-                                        </Button>
-                                        <Button 
-                                        variant="outline-danger"
-                                        size="sm"
-                                        onClick={()=> abrirModalEliminacion(categoria)}
-                                        >
-                                            <i className="bi bi-trash"></i>
+    const handleregistrar = async () => {
+        if (deshabilitado) return;
+        setDesabilitado(true);
+        await agregarCategoria();
+        setDesabilitado(false);
+    };
 
-                                            </Button>
-                                    </td>
-                                    </tr>
-                        )
-                        )}
-                        </tbody>
-                        </Table>
-        )  
-    }
-        </>
-    );
+
+    return (
+        <Modal
+            show={mostrarModal}
+            onHide={() => setMostrarmodal(false)}
+            backdrop="static"
+            keyboard={false}
+            centered
+        >
+            <Modal.Header closeButton>
+                <Modal.Title>Agregar Categoria</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Nombre</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="nombre_categoria"
+                            value={nuevaCategoria.nombre_categoria}
+                            onChange={manejoCambioInput}
+                            placeholder="Ingrese el nombre"
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Descripción</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            rows={3}
+                            name="descripcion_categoria"
+                            value={nuevaCategoria.descripcion_categoria}
+                            onChange={manejoCambioInput}
+                            placeholder="Ingrese la descripción"
+                        />
+                    </Form.Group>
+                </Form>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={() => setMostrarmodal(false)}>
+                    Cancelar
+                </Button>
+                <Button
+                    variant="primary"
+                    onClick={handleregistrar}
+                    disabled={nuevaCategoria.nombre_categoria.trim() === "" || deshabilitado}
+                >
+                    Guardar
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    )
+
 };
 
-export default TablaCategorias;
+export default ModalRegistroCategoria;

@@ -1,17 +1,3 @@
-.const-estiloContenedor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 108%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
-    overflow: hidden;
-    padding: 20px;
-}
-
 .margen-superior-main {
     margin-top: 50px;
     padding: 20px;

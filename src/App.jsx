@@ -13,31 +13,28 @@ import RutaProtegida from "./components/rutas/RutaProtegida";
 import Pagina404 from "./views/Pagina404";
 
 import "./App.css";
+const App = () => {
+    return (
+        <Router>
 
-import "./App.css";
+            <Encabezado />
 
-const App = ( ) => {
-return (
-<Router>
+            <main className="margen-superior-main">
+                <Routes>
 
-<Encabezado />
+                    <Route path="/login" element={<Login />} />
 
-<main className="margen-superior-main">
-<Routes>
+                    <Route path="/" element={<RutaProtegida><Inicio /></RutaProtegida>} />
+                    <Route path="/categorias" element={<RutaProtegida><Categorias /></RutaProtegida>} />
+                    <Route path="/catalogo" element={<Catalogo />} />
+                    <Route path="/productos" element={<RutaProtegida><Productos /></RutaProtegida>} />
 
-<Route path="/login" element={<login />} />
+                    <Route path="*" element={<Pagina404 />} />
 
-<Route path="/" element={<RutaProtegida><Inicio /></RutaProtegida>} />
-<Route path="/categorias" element={<RutaProtegida><Categorias /></RutaProtegida>} />
-<Route path="/catalogo" element={<Catalogo />} />
-<Route path="/productos" element={<RutaProtegida><Productos /></RutaProtegida>} />
-
-<Route path="*" element={<Pagina404 />} />
-
-</Routes>
-</main>
-</Router>
-);
+                </Routes>
+            </main>
+        </Router>
+    );
 }
 
 export default App;

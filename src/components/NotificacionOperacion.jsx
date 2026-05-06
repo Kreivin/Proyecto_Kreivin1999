@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { UseEffect, UseSate } from 'react';
 import { Toast, ToastContainer } from 'react-bootstrap';
 
 const NotificacionOperacion = ({ mostrar, mensaje, tipo, onCerrar }) => {
-    const [visible, setVisible] = useState(mostrar);
+    const [Visible, setVisible] = UseSate(mostrar);
 
-    useEffect(() => {
+    UseEffect(() => {
         setVisible(mostrar);
     }, [mostrar]);
 
@@ -14,9 +14,8 @@ const NotificacionOperacion = ({ mostrar, mensaje, tipo, onCerrar }) => {
         const anio = fecha.getFullYear();
         const mes = String(fecha.getMonth() + 1).padStart(2, '0');
         const dia = String(fecha.getDate()).padStart(2, '0');
-        return `${dia}-${mes}-${anio} ${fecha.toTimeString().slice(0, 5)}`;
+        return '${dia}-${mes}-${anio} ${fecha.toTimeString().slice(0, 5)}';
     }
-
     return (
         <ToastContainer position="top-center" className="p-2">
             <Toast
@@ -24,21 +23,21 @@ const NotificacionOperacion = ({ mostrar, mensaje, tipo, onCerrar }) => {
                     setVisible(false);
                     onCerrar();
                 }}
-                show={visible}
+                show={Visible}
                 delay={2500}
                 autohide
-                bg={tipo === 'exito' ? 'success' : tipo === 'advertencia' ? 'warning' : 'danger'}
+                bg={tipo === 'exito' ? 'success' : tipo === 'advetencia' ? 'warning' : 'danger'}
             >
-
                 <Toast.Header>
-                    <strong className="me-auto">{tipo === 'exito' ? ' Exito' : tipo === 'advertencia' ? ' Advertencia' : 'X Error'}</strong>
+                    <Strong className="me-auto">{tipo === 'exito' ? 'Exito' : tipo === 'advertencia' ? 'Advertencia' : 'Error'}</Strong>
                     <small>{fechaLocal()}</small>
                 </Toast.Header>
                 <Toast.Body className={tipo === 'exito' || tipo === 'error' ? 'text-white' : ''}>
                     {mensaje}
                 </Toast.Body>
             </Toast>
-        </ToastContainer >
+        </ToastContainer>
     );
 }
+
 export default NotificacionOperacion;

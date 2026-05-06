@@ -1,30 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { supabase } from "../database/supabaseconfig";
-
 import ModalRegistroCategoria from "../components/categorias/ModalRegistroCategoria";
-import ModalEdicionCategoria from "../components/categorias/ModalEdicionCategoria";
-import ModalEliminacionCategoria from "../components/categorias/ModalEliminacionCategoria";
-import NotificacionOperacion from "../components/NotificationOperation";
-import TablaCategorias from "../components/categorias/TablaCategorias";
+import NotificacionOperacion from "../components/NotificacionOperacion";
 
 const Categorias = () => {
-
-    const [categorias, setCategorias] = useState([]);
-    const [cargando, setCargando] = useState(true);
-
-    const [mostrarModalEdicion, setMostrarModalEdicion] = useState(false);
-
-    const [categoriaEditar, setCategoriaEditar] = useState({
-        nombre_categoria: "",
-        descripcion_categoria: ""
-    });
-
-    const [mostrarModalEliminacion, setMostrarModalEliminacion] = useState(false);
-
-    const [categoriaAEliminar, setCategoriaAEliminar] = useState({
-        id_categoria: "",
-    });
 
     const [toast, setToast] = useState({ mostrar: false, mensaje: "", tipo: "" });
     const [mostrarModal, setMostrarModal] = useState(false);
@@ -41,101 +21,6 @@ const Categorias = () => {
             [name]: value,
         }));
     };
-
-    const abrirModalEdicion = (categoria) => {
-        setCategoriaEditar({
-            id_categoria: categoria.id_categoria, // Asegúrate que coincida con el nombre en DB
-            nombre_categoria: categoria.nombre_categoria,
-            descripcion_categoria: categoria.descripcion_categoria,
-        });
-        setMostrarModalEdicion(true); // Ahora sí abrimos el modal
-    };
-
-    const abrirModalEliminacion = (categoria) => {
-        setCategoriaAEliminar(categoria);
-        setMostrarModalEliminacion(true); // Ahora sí abrimos el modal
-    };
-
-    const manejoCambioInputEdicion = (e) => {
-        const { name, value } = e.target;
-        setCategoriaEditar((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-    // 2. Función para traer los datos
-    const cargarCategorias = async () => {
-        try {
-            setCargando(true);
-            const { data, error } = await supabase
-                .from("categorias")
-                .select("*")
-                .order("id_categoria", { ascending: true }); // Usando el nombre correcto
-
-            if (error) throw error;
-            setCategorias(data || []);
-        } catch (err) {
-            console.error("Error:", err.message);
-        } finally {
-            setCargando(false); // ¡Esto hace que la tabla aparezca!
-        }
-    };
-
-    const actualizarCategoria = async () => {
-        try {
-            if (
-                !categoriaEditar.nombre_categoria.trim() ||
-                !categoriaEditar.descripcion_categoria.trim()
-            ) {
-                setToast({
-                    mostrar: true,
-                    mensaje: "Se debe de rellenar todos los campos.",
-                    tipo: "advertencia",
-                });
-                return;
-            }
-
-            setMostrarModalEdicion(false);
-
-            const { error } = await supabase
-                .from("categorias")
-                .update({
-                    nombre_categoria: categoriaEditar.nombre_categoria,
-                    descripcion_categoria: categoriaEditar.descripcion_categoria,
-                })
-                .eq("id_categoria", categoriaEditar.id_categoria);
-
-            if (error) {
-                console.error("Error al actualizar categorías: ", error.message);
-                setToast({
-                    mostrar: true,
-                    mensaje: `Error al actualizar la categoría: ${categoriaEditar.nombre_categoria}.`,
-                    tipo: "error",
-                });
-                return;
-            }
-
-            await cargarCategorias();
-            setToast({
-                mostrar: true,
-                mensaje: `La categoría ${categoriaEditar.nombre_categoria} actualizada exitosamente.`,
-                tipo: "exito",
-            });
-        } catch (err) {
-            setToast({
-                mostrar: true,
-                mensaje: "Error inesperado al actualizar la categoría.",
-                tipo: "error",
-            });
-            console.error("Excepción al actualizar la categoría: ", err.message);
-        }
-    };
-
-    // 3. Ejecutar al cargar la página
-    useEffect(() => {
-        cargarCategorias();
-    }, []);
 
     const agregarCategoria = async () => {
         try {
@@ -176,7 +61,6 @@ const Categorias = () => {
             });
 
             // Limpiar formulario y cerrar modal
-            await cargarCategorias(); // Recargar categorías para mostrar la nueva
             setNuevaCategoria({ nombre_categoria: "", descripcion_categoria: "" });
             setMostrarModal(false);
 
@@ -189,48 +73,8 @@ const Categorias = () => {
             });
         }
     };
-
-
-    const eliminarCategoria = async () => {
-        if (!categoriaAEliminar) return;
-
-        try {
-            setMostrarModalEliminacion(false);
-
-            const { error } = await supabase
-                .from("categorias")
-                .delete()
-                .eq("id_categoria", categoriaAEliminar.id_categoria);
-
-            if (error) {
-                console.error("Error al eliminar categoria: ", error.message);
-                setToast({
-                    mostrar: true,
-                    mensaje: `Error al eliminar la categoría ${categoriaAEliminar.nombre_categoria}.`,
-                    tipo: "error",
-                });
-                return;
-            }
-
-            await cargarCategorias();
-            setToast({
-                mostrar: true,
-                mensaje: `Categoría ${categoriaAEliminar.nombre_categoria} eliminada exiosamente.`,
-                tipo: "exito",
-            });
-        } catch (err) {
-            setToast({
-                mostrar: true,
-                mensaje: "Error inesperado al eliminar categoría.",
-                tipo: "error",
-            });
-            console.error("Excepción al eliminar categoría: ", err.mensaje);
-        }
-    };
-
     return (
         <Container className="mt-3">
-
             {/* Título y botón Nueva Categoría */}
             <Row className="align-items-center mb-3">
                 <Col xs={9} sm={7} md={7} lg={7} className="d-flex align-items-center">
@@ -260,46 +104,6 @@ const Categorias = () => {
                 agregarCategoria={agregarCategoria}
             />
 
-
-            {/* Modal de edición de categoría */}
-            <ModalEdicionCategoria
-                mostrarModalEdicion={mostrarModalEdicion}
-                SetMostrarModalEdicion={setMostrarModalEdicion}
-                categoriaEditar={categoriaEditar}
-                manejoCambioInputEdicion={manejoCambioInputEdicion}
-                actualizarCategoria={actualizarCategoria}
-            />
-
-            <ModalEliminacionCategoria
-                mostrarModalEliminacion={mostrarModalEliminacion}
-                setMostrarModalEliminacion={setMostrarModalEliminacion}
-                eliminarCategoria={eliminarCategoria}
-                categoria={categoriaAEliminar}
-            />
-
-            {/* Tabla */}
-            {!cargando && categorias.length > 0 && (
-                <Row>
-                    <Col lg={12}>
-                        <TablaCategorias
-                            categorias={categorias}
-                            abrirModalEdicion={abrirModalEdicion}
-                            abrirModalEliminacion={abrirModalEliminacion}
-                        />
-                    </Col>
-                </Row>
-            )}
-
-            {/* Sin registros */}
-            {!cargando && categorias.length === 0 && (
-                <Row className="text-center my-5">
-                    <Col>
-                        <p className="text-muted fs-5">No hay categorías registradas todavía.</p>
-                    </Col>
-                </Row>
-            )}
-            
-
             {/* Notificación */}
             <NotificacionOperacion
                 mostrar={toast.mostrar}
@@ -307,6 +111,7 @@ const Categorias = () => {
                 tipo={toast.tipo}
                 onCerrar={() => setToast({ ...toast, mostrar: false })}
             />
+
         </Container>
     );
 };
