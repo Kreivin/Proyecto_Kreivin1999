@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Card, Row, Col, Spinner, CardBody, Button } from "react-bootstrap";
+import { Card, Row, Col, Spinner, Button } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-const TarjetaCategoria = ({ categorias, abrirModalEdicion, abrirModalEliminacion }) => {
+const TarjetaEmpleado = ({
+    empleados,
+    abrirModalEdicion,
+}) => {
     const [cargando, setCargando] = useState(true);
     const [idTarjetaActiva, setIdTarjetaActiva] = useState(null);
 
     useEffect(() => {
-        setCargando(!(categorias && categorias.length > 0));
-    }, [categorias]);
+        setCargando(!(empleados && empleados.length > 0));
+    }, [empleados]);
 
     const manejarTeclaEscape = useCallback((evento) => {
         if (evento.key === "Escape") setIdTarjetaActiva(null);
@@ -27,59 +30,70 @@ const TarjetaCategoria = ({ categorias, abrirModalEdicion, abrirModalEliminacion
         <>
             {cargando ? (
                 <div className="text-center my-5">
-                    <h5>Cargando categorías...</h5>
+                    <h5>Cargando empleados...</h5>
                     <Spinner animation="border" variant="success" role="status" />
                 </div>
             ) : (
                 <div>
-                    {categorias.map((cat) => {
-                        const esLaTarjetaActiva = idTarjetaActiva === cat.id_categoria;
+                    {empleados.map((empleado) => {
+                        const tarjetaActiva = idTarjetaActiva === empleado.id_empleado;
 
                         return (
                             <Card
-                                key={cat.id_categoria}
-                                className="mb-3 border-0 rounded-3 shadow-sm w-100"
+                                key={empleado.id_empleado}
+                                className="mb-3 border-0 rounded-3 shadow-sm w-100 tarjeta-empleado-contenedor"
+                                onClick={() => alternarTarjetaActiva(empleado.id_empleado)}
                                 tabIndex={0}
-                                onClick={() => alternarTarjetaActiva(cat.id_categoria)}
                                 onKeyDown={(evento) => {
                                     if (evento.key === "Enter" || evento.key === " ") {
                                         evento.preventDefault();
-                                        alternarTarjetaActiva(cat.id_categoria);
+                                        alternarTarjetaActiva(empleado.id_empleado);
                                     }
                                 }}
-                                aria-label={`Categoria ${cat.nombre_categoria}`}
+                                aria-label={`Empleado ${empleado.nombre_empleado} ${empleado.apellido_empleado}`}
                             >
-                                <CardBody
-                                    className={`p-2 ${esLaTarjetaActiva
-                                        ? "tarjeta-categoria-cuerpo-activo"
-                                        : "tarjeta-categoria-cuerpo-inactivo"
+                                <Card.Body
+                                    className={`p-2 tarjeta-empleado-cuerpo ${tarjetaActiva
+                                            ? "tarjeta-empleado-cuerpo-activo"
+                                            : "tarjeta-empleado-cuerpo-inactivo"
                                         }`}
                                 >
                                     <Row className="align-items-center gx-3">
-                                        <Col xs={2} className="px-2">
-                                            <div className="bg-light d-flex align-items-center justify-content-center rounded">
-                                                <i className="bi bi-bookmark text-muted fs-3"></i>
+                                        <Col xs="auto" className="px-2">
+                                            <div
+                                                className="bg-light d-flex align-items-center justify-content-center rounded tarjeta-empleado-placeholder-imagen"
+                                                style={{ width: "60px", height: "60px" }}
+                                            >
+                                                <i className="bi bi-person text-muted fs-3"></i>
                                             </div>
                                         </Col>
 
-                                        <Col xs={5} className="text-start">
+                                        <Col className="text-start">
                                             <div className="fw-semibold text-truncate">
-                                                {cat.nombre_categoria}
+                                                {empleado.nombre_empleado} {empleado.apellido_empleado}
                                             </div>
-                                            <div className="small text-muted text-truncate">
-                                                {cat.descripcion_categoria}
+                                            <div className="small text-muted">
+                                                {empleado.email}
+                                            </div>
+                                            <div className="small text-muted">
+                                                Celular: {empleado.celular || "-"}
                                             </div>
                                         </Col>
 
-                                        <Col xs={5} className="d-flex flex-column align-items-end justify-content-center">
-                                            <div className="fw-semibold small">
-                                                {esLaTarjetaActiva ? "Seleccionado" : "Activa"}
+                                        <Col
+                                            xs="auto"
+                                            className="d-flex flex-column align-items-end justify-content-center text-end"
+                                        >
+                                            <div className="text-muted small">
+                                                {empleado.tipo_empleado}
                                             </div>
+                                            <div className="fw-bold text-dark">{empleado.pin || "-"}</div>
+                                            <div className="fw-semibold small">Activo</div>
                                         </Col>
                                     </Row>
-                                </CardBody>
+                                </Card.Body>
 
-                                {esLaTarjetaActiva && (
+                                {tarjetaActiva && (
                                     <div
                                         role="dialog"
                                         aria-modal="true"
@@ -87,34 +101,22 @@ const TarjetaCategoria = ({ categorias, abrirModalEdicion, abrirModalEliminacion
                                             e.stopPropagation();
                                             setIdTarjetaActiva(null);
                                         }}
-                                        className="tarjeta-categoria-capa"
+                                        className="tarjeta-empleado-capa"
                                     >
                                         <div
-                                            className="d-flex gap-2 tarjeta-categoria-botones-capa"
+                                            className="d-flex gap-2 tarjeta-empleado-botones-capa"
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <Button
                                                 variant="outline-warning"
                                                 size="sm"
                                                 onClick={() => {
-                                                    abrirModalEdicion(categoria);
+                                                    abrirModalEdicion(empleado);
                                                     setIdTarjetaActiva(null);
                                                 }}
-                                                aria-label={`Editar ${categoria.nombre_categoria}`}
+                                                aria-label={`Editar ${empleado.nombre_empleado} ${empleado.apellido_empleado}`}
                                             >
                                                 <i className="bi bi-pencil"></i>
-                                            </Button>
-
-                                            <Button
-                                                variant="outline-danger"
-                                                size="sm"
-                                                onClick={() => {
-                                                    abrirModalEliminacion(categoria);
-                                                    setIdTarjetaActiva(null);
-                                                }}
-                                                aria-label={`Eliminar ${cat.nombre_categoria}`}
-                                            >
-                                                <i className="bi bi-trash"></i>
                                             </Button>
                                         </div>
                                     </div>
@@ -128,4 +130,4 @@ const TarjetaCategoria = ({ categorias, abrirModalEdicion, abrirModalEliminacion
     );
 };
 
-export default TarjetaCategoria;
+export default TarjetaEmpleado;
