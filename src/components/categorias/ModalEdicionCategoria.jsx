@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { Modal, Form, Button, ModalTitle, ModalBody, FormGroup, FormLabel, FormControl, ModalFooter } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 
 const ModalEdicionCategoria = ({
     mostrarModalEdicion,
-    SetMostrarModalEdicion,
+    setMostrarModalEdicion,
     categoriaEditar,
     manejoCambioInputEdicion,
     actualizarCategoria,
 }) => {
-
     const [deshabilitado, setDeshabilitado] = useState(false);
 
     const handleActualizar = async () => {
@@ -21,53 +20,60 @@ const ModalEdicionCategoria = ({
     return (
         <Modal
             show={mostrarModalEdicion}
-            onHide={() => SetMostrarModalEdicion(false)}
+            onHide={() => setMostrarModalEdicion(false)}
+            backdrop="static"
             keyboard={false}
             centered
         >
-            <ModalTitle>Editar Categoría</ModalTitle>
-            <ModalBody>
+            <Modal.Header closeButton>
+                <Modal.Title>Editar Categoría</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
                 <Form>
-
-                    <FormGroup className="mb-3">
-                        <FormLabel>Nombre</FormLabel>
-                        <FormControl
+                    <Form.Group className="mb-3">
+                        <Form.Label>Nombre</Form.Label>
+                        <Form.Control
                             type="text"
                             name="nombre_categoria"
                             value={categoriaEditar.nombre_categoria}
                             onChange={manejoCambioInputEdicion}
-                            placeholder="Ingresa el nombre de la categoría"
+                            placeholder="Ingresa el nombre"
                         />
-                    </FormGroup>
-
-                    <FormGroup className="mb-3">
-                        <FormLabel>Descripción</FormLabel>
-                        <FormControl
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Descripción</Form.Label>
+                        <Form.Control
                             as="textarea"
+                            rows={3}
                             name="descripcion_categoria"
                             value={categoriaEditar.descripcion_categoria}
                             onChange={manejoCambioInputEdicion}
-                            placeholder="Ingresa una descripción para la categoría"
+                            placeholder="Ingresa la descripción"
                         />
-                    </FormGroup>
-
+                    </Form.Group>
                 </Form>
-            </ModalBody>
-
-            <ModalFooter>
-                <Button variant="secondary" onClick={() => SetMostrarModalEdicion(false)}>
-                    Cancelar edición
+            </Modal.Body>
+            <Modal.Footer>
+                <Button
+                    variant="secondary"
+                    onClick={() => setMostrarModalEdicion(false)}
+                    disabled={deshabilitado}
+                >
+                    Cancelar
                 </Button>
                 <Button
                     variant="primary"
                     onClick={handleActualizar}
-                    disabled={categoriaEditar.nombre_categoria.trim() === "" || deshabilitado}
+                    disabled={
+                        deshabilitado ||
+                        !categoriaEditar.nombre_categoria.trim() ||
+                        !categoriaEditar.descripcion_categoria.trim()
+                    }
                 >
                     Actualizar
                 </Button>
-            </ModalFooter>
+            </Modal.Footer>
         </Modal>
-
     );
 };
 

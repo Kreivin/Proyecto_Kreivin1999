@@ -8,6 +8,7 @@ const ModalRegistroCategoria = ({
     manejoCambioInput,
     agregarCategoria,
 }) => {
+    // Variable de estado para manejar el registro de la categoría
     const [deshabilitado, setDeshabilitado] = useState(false);
 
     const handleRegistrar = async () => {
@@ -17,7 +18,6 @@ const ModalRegistroCategoria = ({
         setDeshabilitado(false);
     };
 
-    // El return debe estar DENTRO de la función del componente
     return (
         <Modal
             show={mostrarModal}
@@ -67,7 +67,7 @@ const ModalRegistroCategoria = ({
                 </Button>
             </Modal.Footer>
         </Modal>
-    ); // Cerramos el return con paréntesis, no con llaves
-}; // Aquí cerramos finalmente el componente
+    );
+};
 
 export default ModalRegistroCategoria;

@@ -1,25 +1,22 @@
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 
-
 const ModalEliminacionCategoria = ({
     mostrarModalEliminacion,
     setMostrarModalEliminacion,
+    categoriaAEliminar,
     eliminarCategoria,
-    categoria,
 }) => {
+    const [deshabilitado, setDeshabilitado] = useState(false);
 
-    const [deshabilitado, setDesahabilitado] = useState(false);
-
-    const handEliminar = async () => {
+    const handleEliminar = async () => {
         if (deshabilitado) return;
-        setDesahabilitado(true);
+        setDeshabilitado(true);
         await eliminarCategoria();
-        setDesahabilitado(false);
-    }
+        setDeshabilitado(false);
+    };
 
     return (
-
         <Modal
             show={mostrarModalEliminacion}
             onHide={() => setMostrarModalEliminacion(false)}
@@ -28,21 +25,22 @@ const ModalEliminacionCategoria = ({
             centered
         >
             <Modal.Header closeButton>
-                <Modal.Title>Confirmar Eliminación</Modal.Title>
+                <Modal.Title>Confirmar Eliminacion</Modal.Title>
             </Modal.Header>
-
             <Modal.Body>
-                ¿Estás seguro de que deseas eliminar la categoría "<strong>{categoria?.nombre_categoria}</strong>"?
+                ¿Estás seguro de eliminar la categoría "
+                <strong>{categoriaAEliminar?.nombre_categoria}</strong>"?
             </Modal.Body>
-
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => setMostrarModalEliminacion(false)}>
+                <Button
+                    variant="secondary"
+                    onClick={() => setMostrarModalEliminacion(false)}
+                >
                     Cancelar
                 </Button>
-
                 <Button
                     variant="danger"
-                    onClick={handEliminar}
+                    onClick={handleEliminar}
                     disabled={deshabilitado}
                 >
                     Eliminar
@@ -52,4 +50,4 @@ const ModalEliminacionCategoria = ({
     );
 };
 
-export default ModalEliminacionCategoria;
+export default ModalEliminacionCategoria

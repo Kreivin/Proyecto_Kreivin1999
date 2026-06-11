@@ -1,74 +1,106 @@
-import React, { useState } from "react";
-import { Modal, Button, Form } from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import { Table, Spinner, Button } from "react-bootstrap";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-const ModalRegistroCategoria = ({
-    mostrarModal,
-    setMostrarmodal,
-    nuevaCategoria,
-    manejoCambioInput,
-    agregarCategoria,
+const TablaCategorias = ({
+    categorias,
+    abrirModalEdicion,
+    abrirModalEliminacion,
+    generarPDFCategoria
 }) => {
-    const [deshabilitado, setDesabilitado] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-    const handleregistrar = async () => {
-        if (deshabilitado) return;
-        setDesabilitado(true);
-        await agregarCategoria();
-        setDesabilitado(false);
+    useEffect(() => {
+        if (categorias && categorias.length > 0) {
+            setLoading(false);
+        } else {
+            setLoading(true);
+        }
+    }, [categorias]);
+
+    const copiarCategoria = async (categoria) => {
+        try {
+            const texto = `ID: ${categoria.id_categoria}
+Nombre: ${categoria.nombre_categoria}
+Descripción: ${categoria.descripcion_categoria}`;
+
+            await navigator.clipboard.writeText(texto);
+
+            alert("Categoría copiada al portapapeles");
+        } catch (error) {
+            console.error("Error al copiar:", error);
+            alert("Error al copiar al portapapeles");
+        }
     };
 
-
     return (
-        <Modal
-            show={mostrarModal}
-            onHide={() => setMostrarmodal(false)}
-            backdrop="static"
-            keyboard={false}
-            centered
-        >
-            <Modal.Header closeButton>
-                <Modal.Title>Agregar Categoria</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Nombre</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="nombre_categoria"
-                            value={nuevaCategoria.nombre_categoria}
-                            onChange={manejoCambioInput}
-                            placeholder="Ingrese el nombre"
-                        />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Descripción</Form.Label>
-                        <Form.Control
-                            as="textarea"
-                            rows={3}
-                            name="descripcion_categoria"
-                            value={nuevaCategoria.descripcion_categoria}
-                            onChange={manejoCambioInput}
-                            placeholder="Ingrese la descripción"
-                        />
-                    </Form.Group>
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={() => setMostrarmodal(false)}>
-                    Cancelar
-                </Button>
-                <Button
-                    variant="primary"
-                    onClick={handleregistrar}
-                    disabled={nuevaCategoria.nombre_categoria.trim() === "" || deshabilitado}
-                >
-                    Guardar
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    )
+        <>
+            {loading ? (
+                <div className="text-center">
+                    <h4>Cargando categorias...</h4>
+                    <Spinner animation="border" variant="success" role="status" />
+                </div>
+            ) : (
+                <Table striped borderless hover responsive size="sm">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th className="d-none d-md-table-cell">Descripción</th>
+                            <th className="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {categorias.map((categoria) => (
+                            <tr key={categoria.id_categoria}>
+                                <td>{categoria.id_categoria}</td>
+                                <td>{categoria.nombre_categoria}</td>
+                                <td className="d-none d-md-table-cell">
+                                    {categoria.descripcion_categoria}
+                                </td>
+                                <td className="text-center">
+                                    <Button
+                                        variant="outline-warning"
+                                        size="sm"
+                                        className="m-1"
+                                        onClick={() => abrirModalEdicion(categoria)}
+                                    >
+                                        <i className="bi bi-pencil"></i>
+                                    </Button>
+                                    <Button
+                                        variant="outline-danger"
+                                        size="sm"
+                                        onClick={() => abrirModalEliminacion(categoria)}
+                                    >
+                                        <i className="bi bi-trash"></i>
+                                    </Button>
+                                    <Button
+                                        variant="outline-primary"
+                                        size="sm"
+                                        className="m-1"
+                                        onClick={() => generarPDFCategoria(categoria)}
+                                    >
+                                        <i className="bi bi-file-earmark-pdf"></i>
+                                    </Button>
 
+                                    <Button
+                                        variant="outline-success"
+                                        size="sm"
+                                        className="m-1"
+                                        onClick={() => copiarCategoria(categoria)}
+                                        title="Copiar al portapapeles"
+                                    >
+                                        <i className="bi bi-clipboard"></i>
+                                    </Button>
+                                    
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            )}
+        </>
+    );
 };
 
-export default ModalRegistroCategoria;
+export default TablaCategorias;

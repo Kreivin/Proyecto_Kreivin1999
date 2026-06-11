@@ -1,64 +1,220 @@
-import React from "react";
-import { Table, Button, Image, ProgressBar } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  Spinner,
+  Button,
+  Image,
+} from "react-bootstrap";
 
-const TablaProductos = ({ productos, abrirModalEliminacion, abrirModalEdicion }) => {
-    return (
-        <Table hover responsive className="align-middle">
-            <thead className="table-light">
-                <tr>
-                    <th>Imagen</th>
-                    <th>Producto</th>
-                    <th>Categoría</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
+import "bootstrap-icons/font/bootstrap-icons.css";
+
+const TablaProductos = ({
+  productos,
+  abrirModalEdicion,
+  abrirModalEliminacion,
+  generarPDFProducto,
+  generarQRImagen,
+}) => {
+
+  const [loading, setLoading] =
+    useState(true);
+
+  useEffect(() => {
+    setLoading(!productos);
+  }, [productos]);
+
+  return (
+    <>
+      {loading ? (
+
+        <div className="text-center">
+
+          <h4>
+            Cargando productos...
+          </h4>
+
+          <Spinner
+            animation="border"
+            variant="success"
+            role="status"
+          />
+
+        </div>
+
+      ) : (
+
+        <Table
+          striped
+          borderless
+          hover
+          responsive
+          size="sm"
+        >
+
+          <thead>
+
+            <tr>
+
+              <th>#</th>
+
+              <th>Imagen</th>
+
+              <th>Nombre</th>
+
+              <th className="d-none d-md-table-cell">
+                Descripción
+              </th>
+
+              <th>Categoría</th>
+
+              <th>Precio</th>
+
+              <th className="text-center">
+                Acciones
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            {productos.map(
+              (producto) => (
+
+                <tr
+                  key={
+                    producto.id_producto
+                  }
+                >
+
+                  <td>
+                    {
+                      producto.id_producto
+                    }
+                  </td>
+
+                  <td>
+
+                    <Image
+                      src={
+                        producto.url_imagen
+                      }
+                      alt="Producto"
+                      rounded
+                      width="50"
+                      height="50"
+                      style={{
+                        objectFit:
+                          "cover",
+                      }}
+                    />
+
+                  </td>
+
+                  <td>
+                    {
+                      producto.nombre_producto
+                    }
+                  </td>
+
+                  <td className="d-none d-md-table-cell">
+
+                    {
+                      producto.descripcion_producto
+                    }
+
+                  </td>
+
+                  <td>
+
+                    {
+                      producto.categoria_producto
+                    }
+
+                  </td>
+
+                  <td>
+
+                    C$
+                    {parseFloat(
+                      producto.precio_venta || 0
+                    ).toFixed(2)}
+
+                  </td>
+
+                  <td className="text-center">
+
+                    <Button
+                      variant="outline-warning"
+                      size="sm"
+                      className="m-1"
+                      onClick={() =>
+                        abrirModalEdicion(
+                          producto
+                        )
+                      }
+                    >
+
+                      <i className="bi bi-pencil"></i>
+
+                    </Button>
+
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      className="m-1"
+                      onClick={() =>
+                        abrirModalEliminacion(
+                          producto
+                        )
+                      }
+                    >
+
+                      <i className="bi bi-trash"></i>
+
+                    </Button>
+
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={() => {
+                        generarQRImagen(producto);
+                      }}
+                      title="Generar QR de la imagen"
+                    >
+                      <i className="bi bi-qr-code"></i>
+                    </Button>
+
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="m-1"
+                      onClick={() =>
+                        generarPDFProducto(
+                          producto
+                        )
+                      }
+                    >
+
+                      <i className="bi bi-file-earmark-pdf"></i>
+
+                    </Button>
+
+                  </td>
+
                 </tr>
-            </thead>
 
-            <tbody>
-                {productos.map((prod) => (
-                    <tr key={prod.id_producto}>
-                        <td>
-                            {/*VISUALIZACIÓN DE LA IMAGEN */}
-                            <Image
-                                src={prod.imagen_url}
-                                alt={prod.nombre_producto}
-                                rounded
-                                style={{ width: "50px", height: "50px", objectFit: "cover" }}
-                                onError={(e) => { e.target.src = "https://via.placeholder.com/50"; }}
-                            />
-                        </td>
-                        <td>
-                            <div className="fw-bold">{prod.nombre_producto}</div>
-                            <small className="text-muted">{prod.descripcion_producto}</small>
-                        </td>
-                        <td>{prod.categorias?.nombre_categoria}</td>
-                        <td>${parseFloat(prod.precio_venta).toFixed(2)}</td>
-                        <td className="text-end">
+              )
+            )}
 
-                            <Button
-                                variant="outline-warning"
-                                size="sm"
-                                className="me-2"
-                                onClick={() => abrirModalEdicion(prod)}
-                            >
-                                <i className="bi bi-pencil"></i>
-                            </Button>
+          </tbody>
 
-                            <Button
-                                variant="outline-danger"
-                                size="sm"
-                                onClick={() => abrirModalEliminacion(prod)}
-                            >
-                                <i className="bi bi-trash"></i>
-                            </Button>
-
-                        </td>
-
-                    </tr>
-                ))}
-            </tbody>
         </Table>
-    );
+
+      )}
+    </>
+  );
 };
 
 export default TablaProductos;
