@@ -11,6 +11,7 @@ const ModalEliminacionCategoria = ({
 
     const handleEliminar = async () => {
         if (deshabilitado) return;
+
         setDeshabilitado(true);
         await eliminarCategoria();
         setDeshabilitado(false);
@@ -25,29 +26,33 @@ const ModalEliminacionCategoria = ({
             centered
         >
             <Modal.Header closeButton>
-                <Modal.Title>Confirmar Eliminacion</Modal.Title>
+                <Modal.Title>Confirmar Eliminación</Modal.Title>
             </Modal.Header>
+
             <Modal.Body>
-                ¿Estás seguro de eliminar la categoría "
-                <strong>{categoriaAEliminar?.nombre_categoria}</strong>"?
+                ¿Estás seguro de eliminar la categoría{" "}
+                <strong>{categoriaAEliminar?.nombre_categoria}</strong>?
             </Modal.Body>
+
             <Modal.Footer>
                 <Button
                     variant="secondary"
                     onClick={() => setMostrarModalEliminacion(false)}
+                    disabled={deshabilitado}
                 >
                     Cancelar
                 </Button>
+
                 <Button
                     variant="danger"
                     onClick={handleEliminar}
                     disabled={deshabilitado}
                 >
-                    Eliminar
+                    {deshabilitado ? "Eliminando..." : "Eliminar"}
                 </Button>
             </Modal.Footer>
         </Modal>
     );
 };
 
-export default ModalEliminacionCategoria
+export default ModalEliminacionCategoria;

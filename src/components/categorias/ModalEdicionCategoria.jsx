@@ -12,6 +12,7 @@ const ModalEdicionCategoria = ({
 
     const handleActualizar = async () => {
         if (deshabilitado) return;
+
         setDeshabilitado(true);
         await actualizarCategoria();
         setDeshabilitado(false);
@@ -28,6 +29,7 @@ const ModalEdicionCategoria = ({
             <Modal.Header closeButton>
                 <Modal.Title>Editar Categoría</Modal.Title>
             </Modal.Header>
+
             <Modal.Body>
                 <Form>
                     <Form.Group className="mb-3">
@@ -37,9 +39,10 @@ const ModalEdicionCategoria = ({
                             name="nombre_categoria"
                             value={categoriaEditar.nombre_categoria}
                             onChange={manejoCambioInputEdicion}
-                            placeholder="Ingresa el nombre"
+                            placeholder="Ingresa el nombre de la categoría"
                         />
                     </Form.Group>
+
                     <Form.Group className="mb-3">
                         <Form.Label>Descripción</Form.Label>
                         <Form.Control
@@ -53,6 +56,7 @@ const ModalEdicionCategoria = ({
                     </Form.Group>
                 </Form>
             </Modal.Body>
+
             <Modal.Footer>
                 <Button
                     variant="secondary"
@@ -61,6 +65,7 @@ const ModalEdicionCategoria = ({
                 >
                     Cancelar
                 </Button>
+
                 <Button
                     variant="primary"
                     onClick={handleActualizar}
@@ -70,7 +75,7 @@ const ModalEdicionCategoria = ({
                         !categoriaEditar.descripcion_categoria.trim()
                     }
                 >
-                    Actualizar
+                    {deshabilitado ? "Actualizando..." : "Actualizar"}
                 </Button>
             </Modal.Footer>
         </Modal>

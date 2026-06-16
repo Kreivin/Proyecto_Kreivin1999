@@ -8,11 +8,11 @@ const ModalRegistroCategoria = ({
     manejoCambioInput,
     agregarCategoria,
 }) => {
-    // Variable de estado para manejar el registro de la categoría
     const [deshabilitado, setDeshabilitado] = useState(false);
 
     const handleRegistrar = async () => {
         if (deshabilitado) return;
+
         setDeshabilitado(true);
         await agregarCategoria();
         setDeshabilitado(false);
@@ -29,6 +29,7 @@ const ModalRegistroCategoria = ({
             <Modal.Header closeButton>
                 <Modal.Title>Agregar Categoría</Modal.Title>
             </Modal.Header>
+
             <Modal.Body>
                 <Form>
                     <Form.Group className="mb-3">
@@ -38,9 +39,10 @@ const ModalRegistroCategoria = ({
                             name="nombre_categoria"
                             value={nuevaCategoria.nombre_categoria}
                             onChange={manejoCambioInput}
-                            placeholder="Ingresa el nombre"
+                            placeholder="Ingresa el nombre de la categoría"
                         />
                     </Form.Group>
+
                     <Form.Group className="mb-3">
                         <Form.Label>Descripción</Form.Label>
                         <Form.Control
@@ -54,16 +56,26 @@ const ModalRegistroCategoria = ({
                     </Form.Group>
                 </Form>
             </Modal.Body>
+
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => setMostrarModal(false)}>
+                <Button
+                    variant="secondary"
+                    onClick={() => setMostrarModal(false)}
+                    disabled={deshabilitado}
+                >
                     Cancelar
                 </Button>
+
                 <Button
                     variant="primary"
                     onClick={handleRegistrar}
-                    disabled={nuevaCategoria.nombre_categoria.trim() === "" || deshabilitado}
+                    disabled={
+                        deshabilitado ||
+                        !nuevaCategoria.nombre_categoria.trim() ||
+                        !nuevaCategoria.descripcion_categoria.trim()
+                    }
                 >
-                    Guardar
+                    {deshabilitado ? "Guardando..." : "Guardar"}
                 </Button>
             </Modal.Footer>
         </Modal>
